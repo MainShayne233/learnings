@@ -1,0 +1,57 @@
+#! /usr/bin/env bash
+
+REPO_DIR="$( cd "$(dirname "$0")" ; pwd -P )/../"
+ENTRIES_DIR="$REPO_DIR/entries"
+
+current_date() {
+  date "+%Y-%m-%d"
+}
+
+today() {
+  local entry_path
+  local date
+
+  date=$(current_date)
+  entry_path="${ENTRIES_DIR}/$(date).md"
+
+  if [ ! -f "$entry_path" ]; then
+    echo "# $(current_date)" > "$entry_path"
+  fi
+
+  vim  "$entry_path"
+}
+
+publish() {
+  (
+    cd "$REPO_DIR"
+    git add -A
+    git commit -m 'PUBLISH - AUTO COMMIT'
+    git push
+  )
+}
+
+main() {
+  local action
+
+  if [ "$#" -ne 1 ]; then
+    echo "Usage: learnings <action>"
+    exit 1
+  fi
+
+  local action="$1"
+
+  case "$action" in
+    "today")
+      today
+      ;;
+    "publish")
+      publish
+      ;;
+    *)
+      echo "Unrecognized command"
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"
