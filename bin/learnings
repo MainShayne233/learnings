@@ -9,10 +9,8 @@ current_date() {
 
 today() {
   local entry_path
-  local date
 
-  date=$(current_date)
-  entry_path="${ENTRIES_DIR}/$(date).md"
+  entry_path="${ENTRIES_DIR}/$(current_date).md"
 
   if [ ! -f "$entry_path" ]; then
     echo "# $(current_date)" > "$entry_path"
